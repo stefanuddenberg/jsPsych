@@ -1,6 +1,6 @@
 {
   "name": "jspsych",
-  "version": "6.1.0",
+  "version": "6.1.1",
   "description": "Behavioral experiments in a browser",
   "main": "jspsych.js",
   "directories": {
@@ -13,12 +13,12 @@
     "type": "git",
     "url": "git+https://github.com/jodeleeuw/jsPsych.git"
   },
-  "author": "Josh de Leeuw",
+  "author": "Josh de Leeuw, Stefan Uddenberg",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jodeleeuw/jsPsych/issues"
+    "url": "https://github.com/stefanuddenberg/jsPsych/issues"
   },
-  "homepage": "https://github.com/jodeleeuw/jsPsych#readme",
+  "homepage": "https://github.com/stefanuddenberg/jsPsych#readme",
   "devDependencies": {
     "jest": "^24.8"
   },
