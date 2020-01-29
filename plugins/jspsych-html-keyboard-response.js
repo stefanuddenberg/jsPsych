@@ -89,7 +89,7 @@ const html_keyboard_response = (function() {
       // gather the data to store for the trial
       var trial_data = {
         rt: response.rt,
-        stimulus: trial.stimulus,
+        // stimulus: trial.stimulus, // removing for JSON compatibility
         key_press: response.key,
       };
 
