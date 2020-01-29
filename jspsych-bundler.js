@@ -1,7 +1,9 @@
 // Bundles the jsPsych package together so it isn't a global variable
-import jsPsych from "./jspsych";
-import instructions from "./plugins/jspsych-instructions";
+import jsPsych from "jspsych";
 
-jsPsych.plugins["instructions"] = instructions;
-
-export default jsPsych;
+export default function bundle(list_of_plugins) {
+  for (const plugin of list_of_plugins) {
+    jsPsych.plugins[plugin.info.name] = plugin;
+  }
+  return jsPsych;
+}
