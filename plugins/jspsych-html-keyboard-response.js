@@ -10,6 +10,8 @@
 
 // TODO: Strip newlines and other backslashes from stimulus
 
+import jsPsych from "../jspsych";
+
 const html_keyboard_response = (function() {
   var plugin = {};
 
