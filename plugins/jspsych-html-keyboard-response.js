@@ -8,6 +8,8 @@
  *
  **/
 
+// TODO: Strip newlines and other backslashes from stimulus
+
 const html_keyboard_response = (function() {
   var plugin = {};
 
