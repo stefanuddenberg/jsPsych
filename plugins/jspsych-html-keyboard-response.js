@@ -8,8 +8,6 @@
  *
  **/
 
-// TODO: Strip newlines and other backslashes from stimulus
-
 import jsPsych from "../jspsych";
 
 const html_keyboard_response = (function() {
@@ -91,9 +89,10 @@ const html_keyboard_response = (function() {
       }
 
       // gather the data to store for the trial
+      const stimulus = trial.stimulus.replace(/(\r\n|\n|\r)/gm, "");
       var trial_data = {
         rt: response.rt,
-        // stimulus: trial.stimulus, // removing for JSON compatibility
+        stimulus,
         key_press: response.key,
       };
 
