@@ -3,7 +3,7 @@
  * This plugin displays text (including HTML formatted strings) during the experiment.
  * Use it to show instructions, provide performance feedback, etc...
  *
- * Modified by Stefan Uddenberg.
+ * Josh de Leeuw, modified by Stefan Uddenberg.
  *
  * Page numbers can be displayed to help with navigation by setting show_page_number
  * to true.
@@ -13,6 +13,8 @@
  *
  *
  */
+
+// TODO: Figure out how to re-include view_history such that it doesn't affect JSON parsing.
 
 import jsPsych from "../jspsych";
 
@@ -29,63 +31,63 @@ const instructions = (function() {
         default: undefined,
         array: true,
         description:
-          "Each element of the array is the content for a single page."
+          "Each element of the array is the content for a single page.",
       },
       key_forward: {
         type: jsPsych.plugins.parameterType.KEYCODE,
         pretty_name: "Key forward",
         default: "rightarrow",
         description:
-          "The key the subject can press in order to advance to the next page."
+          "The key the subject can press in order to advance to the next page.",
       },
       key_backward: {
         type: jsPsych.plugins.parameterType.KEYCODE,
         pretty_name: "Key backward",
         default: "leftarrow",
         description:
-          "The key that the subject can press to return to the previous page."
+          "The key that the subject can press to return to the previous page.",
       },
       allow_backward: {
         type: jsPsych.plugins.parameterType.BOOL,
         pretty_name: "Allow backward",
         default: true,
         description:
-          "If true, the subject can return to the previous page of the instructions."
+          "If true, the subject can return to the previous page of the instructions.",
       },
       allow_keys: {
         type: jsPsych.plugins.parameterType.BOOL,
         pretty_name: "Allow keys",
         default: true,
         description:
-          "If true, the subject can use keyboard keys to navigate the pages."
+          "If true, the subject can use keyboard keys to navigate the pages.",
       },
       show_clickable_nav: {
         type: jsPsych.plugins.parameterType.BOOL,
         pretty_name: "Show clickable nav",
         default: false,
         description:
-          'If true, then a "Previous" and "Next" button will be displayed beneath the instructions.'
+          'If true, then a "Previous" and "Next" button will be displayed beneath the instructions.',
       },
       show_page_number: {
         type: jsPsych.plugins.parameterType.BOOL,
         pretty_name: "Show page number",
         default: false,
         description:
-          "If true, and clickable navigation is enabled, then Page x/y will be shown between the nav buttons."
+          "If true, and clickable navigation is enabled, then Page x/y will be shown between the nav buttons.",
       },
       button_label_previous: {
         type: jsPsych.plugins.parameterType.STRING,
         pretty_name: "Button label previous",
         default: "Previous",
-        description: "The text that appears on the button to go backwards."
+        description: "The text that appears on the button to go backwards.",
       },
       button_label_next: {
         type: jsPsych.plugins.parameterType.STRING,
         pretty_name: "Button label next",
         default: "Next",
-        description: "The text that appears on the button to go forwards."
-      }
-    }
+        description: "The text that appears on the button to go forwards.",
+      },
+    },
   };
 
   plugin.trial = function(display_element, trial) {
@@ -192,7 +194,7 @@ const instructions = (function() {
 
       view_history.push({
         page_index: current_page,
-        viewing_time: page_view_time
+        viewing_time: page_view_time,
       });
 
       last_page_update_time = current_time;
@@ -207,7 +209,7 @@ const instructions = (function() {
 
       var trial_data = {
         // view_history: JSON.stringify(view_history), // messes with parsing JSON
-        rt: new Date().getTime() - start_time
+        rt: new Date().getTime() - start_time,
       };
 
       jsPsych.finishTrial(trial_data);
@@ -220,7 +222,7 @@ const instructions = (function() {
         valid_responses: [trial.key_forward, trial.key_backward],
         rt_method: "date",
         persist: false,
-        allow_held_key: false
+        allow_held_key: false,
       });
       // check if key is forwards or backwards and update page
       if (jsPsych.pluginAPI.compareKeys(info.key, trial.key_backward)) {
@@ -241,7 +243,7 @@ const instructions = (function() {
         callback_function: after_response,
         valid_responses: [trial.key_forward, trial.key_backward],
         rt_method: "date",
-        persist: false
+        persist: false,
       });
     }
   };
