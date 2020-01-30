@@ -1,6 +1,6 @@
 /**
  * jspsych-html-keyboard-response
- * Josh de Leeuw
+ * Josh de Leeuw, modified by Stefan Uddenberg
  *
  * plugin for displaying a stimulus and getting a keyboard response
  *
@@ -89,6 +89,7 @@ const html_keyboard_response = (function() {
       }
 
       // gather the data to store for the trial
+      // removing newlines
       const stimulus = trial.stimulus.replace(/(\r\n|\n|\r)/gm, "");
       var trial_data = {
         rt: response.rt,
