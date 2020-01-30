@@ -1,4 +1,4 @@
-/* custom-instructions.js
+/** custom-instructions.js
  *
  * This plugin displays text (including HTML formatted strings) during the experiment.
  * Use it to show instructions, provide performance feedback, etc...
