@@ -1855,7 +1855,7 @@ jsPsych.turk = (function() {
       turk.assignmentId == "" &&
       turk.workerId == "";
 
-    turk_info = turk;
+    let turk_info = turk;
 
     return turk;
   };
@@ -1999,7 +1999,7 @@ jsPsych.randomization = (function() {
             random_shuffle[i + 1],
             random_shuffle[random_pick + 1],
           ) ||
-            equalityTest(random_shuffle[i + 1], random_shuffle[random_pick - 1])
+          equalityTest(random_shuffle[i + 1], random_shuffle[random_pick - 1])
         ) {
           random_pick =
             Math.floor(Math.random() * (random_shuffle.length - 2)) + 1;
