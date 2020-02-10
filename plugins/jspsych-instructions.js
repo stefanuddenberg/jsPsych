@@ -209,6 +209,7 @@ const instructions = (function() {
 
       var trial_data = {
         // view_history: JSON.stringify(view_history), // messes with parsing JSON
+        view_history, // let's see if this works
         rt: new Date().getTime() - start_time,
       };
 
