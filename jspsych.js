@@ -1,3 +1,5 @@
+import { parse } from "json2csv";
+
 /**
  * jspsych.js
  * Josh de Leeuw
@@ -1437,7 +1439,8 @@ jsPsych.data = (function() {
     };
 
     data_collection.csv = function() {
-      return JSON2CSV(trials);
+      // return JSON2CSV(trials);
+      return parse(trials);
     };
 
     data_collection.json = function(pretty) {
@@ -1755,53 +1758,53 @@ jsPsych.data = (function() {
     document.getElementById("jspsych-download-as-text-link").click();
   }
 
-  //
-  // A few helper functions to handle data format conversion
-  //
+  // //
+  // // A few helper functions to handle data format conversion
+  // //
 
-  // this function based on code suggested by StackOverflow users:
-  // http://stackoverflow.com/users/64741/zachary
-  // http://stackoverflow.com/users/317/joseph-sturtevant
+  // // this function based on code suggested by StackOverflow users:
+  // // http://stackoverflow.com/users/64741/zachary
+  // // http://stackoverflow.com/users/317/joseph-sturtevant
 
-  function JSON2CSV(objArray) {
-    var array = typeof objArray != "object" ? JSON.parse(objArray) : objArray;
-    var line = "";
-    var result = "";
-    var columns = [];
+  // function JSON2CSV(objArray) {
+  //   var array = typeof objArray != "object" ? JSON.parse(objArray) : objArray;
+  //   var line = "";
+  //   var result = "";
+  //   var columns = [];
 
-    var i = 0;
-    for (var j = 0; j < array.length; j++) {
-      for (var key in array[j]) {
-        var keyString = key + "";
-        keyString = '"' + keyString.replace(/"/g, '""') + '",';
-        if (!columns.includes(key)) {
-          columns[i] = key;
-          line += keyString;
-          i++;
-        }
-      }
-    }
+  //   var i = 0;
+  //   for (var j = 0; j < array.length; j++) {
+  //     for (var key in array[j]) {
+  //       var keyString = key + "";
+  //       keyString = '"' + keyString.replace(/"/g, '""') + '",';
+  //       if (!columns.includes(key)) {
+  //         columns[i] = key;
+  //         line += keyString;
+  //         i++;
+  //       }
+  //     }
+  //   }
 
-    line = line.slice(0, -1);
-    result += line + "\r\n";
+  //   line = line.slice(0, -1);
+  //   result += line + "\r\n";
 
-    for (var i = 0; i < array.length; i++) {
-      var line = "";
-      for (var j = 0; j < columns.length; j++) {
-        var value =
-          typeof array[i][columns[j]] === "undefined"
-            ? ""
-            : array[i][columns[j]];
-        var valueString = value + "";
-        line += '"' + valueString.replace(/"/g, '""') + '",';
-      }
+  //   for (var i = 0; i < array.length; i++) {
+  //     var line = "";
+  //     for (var j = 0; j < columns.length; j++) {
+  //       var value =
+  //         typeof array[i][columns[j]] === "undefined"
+  //           ? ""
+  //           : array[i][columns[j]];
+  //       var valueString = value + "";
+  //       line += '"' + valueString.replace(/"/g, '""') + '",';
+  //     }
 
-      line = line.slice(0, -1);
-      result += line + "\r\n";
-    }
+  //     line = line.slice(0, -1);
+  //     result += line + "\r\n";
+  //   }
 
-    return result;
-  }
+  //   return result;
+  // }
 
   // this function is modified from StackOverflow:
   // http://stackoverflow.com/posts/3855394

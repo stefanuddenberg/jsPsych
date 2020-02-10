@@ -29,5 +29,8 @@
       "pretendToBeVisual": true
     },
     "testURL": "http://localhost/"
+  },
+  "dependencies": {
+    "json2csv": "^4.5.4"
   }
 }
