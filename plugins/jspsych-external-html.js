@@ -6,7 +6,7 @@ the plugin will wait of a specified time before it proceeds.
 documentation: docs.jspsych.org
 */
 
-import jspsych from "../jspsych";
+import jsPsych from "../jspsych";
 
 const external_html = (function() {
   var plugin = {};
