@@ -2170,6 +2170,32 @@ jsPsych.pluginAPI = (function() {
     held_keys[e.keyCode] = false;
   };
 
+  // * Add stylesheets dynamically
+  // const css_block = jsPsych.pluginAPI.loadCSS('body { background-color: #ff0000; }');
+  // jsPsych.pluginAPI.unloadCSS(css_block);
+
+  module.loadCSS = function(css) {
+    /** Loads CSS to a dynamically created stylesheet
+     * and returns the id of that stylesheet for later
+     * unloading.
+     * */
+    const random_id = jsPsych.randomization.randomID(20);
+    const id = `custom-jspsych-css-${random_id}`;
+    const style_sheet = document.createElement("style");
+    style_sheet.type = "text/css";
+    style_sheet.setAttribute("id", id);
+    style_sheet.innerHTML = css;
+    document.head.appendChild(style_sheet);
+    return id;
+  };
+
+  module.unloadCSS = function(id) {
+    /** Unloads the stylesheet referenced by id. */
+    const style_sheet = document.getElementById(id);
+    style_sheet.disabled = true;
+    style_sheet.parentNode.removeChild(style_sheet);
+  };
+
   module.reset = function(root_element) {
     keyboard_listeners = [];
     held_keys = {};
