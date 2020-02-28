@@ -72,7 +72,7 @@ const survey_text = (function() {
       button_label: {
         type: jsPsych.plugins.parameterType.STRING,
         pretty_name: "Button label",
-        default: "Continue",
+        default: "Next",
         description: "The text that appears on the button to finish the trial.",
       },
     },
@@ -168,7 +168,7 @@ const survey_text = (function() {
 
     // add submit button
     html +=
-      '<input type="submit" id="jspsych-survey-text-next" class="jspsych-btn jspsych-survey-text" value="' +
+      '<input type="submit" id="jspsych-survey-text-next" class="btn btn-primary btn-lg jspsych-survey-text" value="' +
       trial.button_label +
       '"></input>';
 
