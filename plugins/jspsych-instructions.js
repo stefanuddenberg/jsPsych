@@ -14,11 +14,9 @@
  *
  */
 
-// TODO: Figure out how to re-include view_history such that it doesn't affect JSON parsing.
-
 import jsPsych from "../jspsych";
 
-const instructions = (function() {
+const instructions = (function () {
   var plugin = {};
 
   plugin.info = {
@@ -57,7 +55,7 @@ const instructions = (function() {
       allow_keys: {
         type: jsPsych.plugins.parameterType.BOOL,
         pretty_name: "Allow keys",
-        default: true,
+        default: false,
         description:
           "If true, the subject can use keyboard keys to navigate the pages.",
       },
@@ -87,10 +85,16 @@ const instructions = (function() {
         default: "Next",
         description: "The text that appears on the button to go forwards.",
       },
+      show_button_delay: {
+        type: jsPsych.plugins.parameterType.INT,
+        pretty_name: "Show button delay",
+        default: 800,
+        description: "The delay until the next and back buttons are shown.",
+      },
     },
   };
 
-  plugin.trial = function(display_element, trial) {
+  plugin.trial = function (display_element, trial) {
     var current_page = 0;
 
     var view_history = [];
@@ -128,7 +132,7 @@ const instructions = (function() {
         if (trial.allow_backward) {
           var allowed = current_page > 0 ? "" : "disabled='disabled'";
           nav_html +=
-            "<button id='jspsych-instructions-back' class='jspsych-btn btn btn-outline-secondary' style='margin-right: 5px;' " +
+            "<button id='jspsych-instructions-back' class='jspsych-btn btn btn-outline-secondary instructions-btn' style='margin-right: 5px;' " +
             allowed +
             ">&lt; " +
             trial.button_label_previous +
@@ -138,7 +142,7 @@ const instructions = (function() {
           nav_html += pagenum_display;
         }
         nav_html +=
-          "<button id='jspsych-instructions-next' class='jspsych-btn btn btn-primary'" +
+          "<button id='jspsych-instructions-next' class='jspsych-btn btn btn-primary instructions-btn'" +
           "style='margin-left: 5px;'>" +
           trial.button_label_next +
           " &gt;</button></div>";
@@ -164,6 +168,18 @@ const instructions = (function() {
         }
         display_element.innerHTML = html;
       }
+      if (trial.show_button_delay && current_page < trial.pages.length) {
+        hideButtons();
+        setTimeout(showButtons, trial.show_button_delay);
+      }
+    }
+
+    function hideButtons() {
+      $(".instructions-btn").css({ visibility: "hidden" });
+    }
+
+    function showButtons() {
+      $(".instructions-btn").css({ visibility: "visible" });
     }
 
     function next() {
@@ -208,7 +224,6 @@ const instructions = (function() {
       display_element.innerHTML = "";
 
       var trial_data = {
-        // view_history: JSON.stringify(view_history), // messes with parsing JSON
         view_history, // let's see if this works
         rt: new Date().getTime() - start_time,
       };
@@ -216,7 +231,7 @@ const instructions = (function() {
       jsPsych.finishTrial(trial_data);
     }
 
-    var after_response = function(info) {
+    var after_response = function (info) {
       // have to reinitialize this instead of letting it persist to prevent accidental skips of pages by holding down keys too long
       keyboard_listener = jsPsych.pluginAPI.getKeyboardResponse({
         callback_function: after_response,
