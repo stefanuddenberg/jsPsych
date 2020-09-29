@@ -88,7 +88,7 @@ const instructions = (function () {
       show_button_delay: {
         type: jsPsych.plugins.parameterType.INT,
         pretty_name: "Show button delay",
-        default: 800,
+        default: 0,
         description: "The delay until the next and back buttons are shown.",
       },
     },
