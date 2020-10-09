@@ -5,6 +5,8 @@
  *
  */
 
+import jsPsych from "../jspsych";
+
 const fullscreen = (function () {
   var plugin = {};
 
