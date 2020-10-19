@@ -61,7 +61,7 @@ const fullscreen = (function () {
       if (trial.fullscreen_mode) {
         display_element.innerHTML =
           trial.message +
-          '<button id="jspsych-fullscreen-btn" class="jspsych-btn">' +
+          '<button id="jspsych-fullscreen-btn" class="btn btn-lg btn-primary">' +
           trial.button_label +
           "</button>";
         var listener = display_element
