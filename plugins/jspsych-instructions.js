@@ -14,10 +14,10 @@
  *
  */
 
-import jsPsych from "../jspsych";
+import jsPsych from "jspsych";
 
 const instructions = (function () {
-  var plugin = {};
+  let plugin = {};
 
   plugin.info = {
     name: "instructions",
@@ -85,23 +85,45 @@ const instructions = (function () {
         default: "Next",
         description: "The text that appears on the button to go forwards.",
       },
-      show_button_delay: {
+      show_button_delays: {
         type: jsPsych.plugins.parameterType.INT,
         pretty_name: "Show button delay",
-        default: 0,
+        array: true,
+        default: [0],
         description: "The delay until the next and back buttons are shown.",
+      },
+      enable_button_delays: {
+        type: jsPsych.plugins.parameterType.INT,
+        pretty_name: "Enable button delay",
+        array: true,
+        default: [0],
+        description: "The delay until the next and back buttons are enabled.",
       },
     },
   };
 
   plugin.trial = function (display_element, trial) {
-    var current_page = 0;
+    let current_page = 0;
 
-    var view_history = [];
+    let view_history = [];
 
-    var start_time = new Date().getTime();
+    const start_time = new Date().getTime();
 
-    var last_page_update_time = start_time;
+    let last_page_update_time = start_time;
+
+    // make every page have the same delay if only one delay
+    if (trial.show_button_delays.length === 1) {
+      const delay = trial.show_button_delays[0];
+      trial.show_button_delays = _.times(trial.pages.length, _.constant(delay));
+    }
+
+    if (trial.enable_button_delays.length === 1) {
+      const delay = trial.show_button_delays[0];
+      trial.enable_button_delays = _.times(
+        trial.pages.length,
+        _.constant(delay),
+      );
+    }
 
     function btnListener(evt) {
       evt.target.removeEventListener("click", btnListener);
@@ -113,9 +135,9 @@ const instructions = (function () {
     }
 
     function show_current_page() {
-      var html = trial.pages[current_page];
+      let html = trial.pages[current_page];
 
-      var pagenum_display = "";
+      let pagenum_display = "";
       if (trial.show_page_number) {
         pagenum_display =
           "<span style='margin: 0 1em;' class='" +
@@ -127,10 +149,10 @@ const instructions = (function () {
       }
 
       if (trial.show_clickable_nav) {
-        var nav_html =
+        let nav_html =
           "<div class='jspsych-instructions-nav' style='padding: 10px 0px;'>";
         if (trial.allow_backward) {
-          var allowed = current_page > 0 ? "" : "disabled='disabled'";
+          let allowed = current_page > 0 ? "" : "disabled='disabled'";
           nav_html +=
             "<button id='jspsych-instructions-back' class='jspsych-btn btn btn-outline-secondary instructions-btn' style='margin-right: 5px;' " +
             allowed +
@@ -168,9 +190,11 @@ const instructions = (function () {
         }
         display_element.innerHTML = html;
       }
-      if (trial.show_button_delay && current_page < trial.pages.length) {
+      if (current_page < trial.pages.length) {
         hideButtons();
-        setTimeout(showButtons, trial.show_button_delay);
+        disableButtons();
+        setTimeout(showButtons, trial.show_button_delays[current_page]);
+        setTimeout(enableButtons, trial.enable_button_delays[current_page]);
       }
     }
 
@@ -180,6 +204,14 @@ const instructions = (function () {
 
     function showButtons() {
       $(".instructions-btn").css({ visibility: "visible" });
+    }
+
+    function disableButtons() {
+      $(".instructions-btn").prop("disabled", true);
+    }
+
+    function enableButtons() {
+      $(".instructions-btn").prop("disabled", false);
     }
 
     function next() {
@@ -204,9 +236,9 @@ const instructions = (function () {
     }
 
     function add_current_page_to_view_history() {
-      var current_time = new Date().getTime();
+      const current_time = new Date().getTime();
 
-      var page_view_time = current_time - last_page_update_time;
+      const page_view_time = current_time - last_page_update_time;
 
       view_history.push({
         page_index: current_page,
@@ -223,15 +255,15 @@ const instructions = (function () {
 
       display_element.innerHTML = "";
 
-      var trial_data = {
-        view_history, // let's see if this works
+      const trial_data = {
+        view_history,
         rt: new Date().getTime() - start_time,
       };
 
       jsPsych.finishTrial(trial_data);
     }
 
-    var after_response = function (info) {
+    function after_response(info) {
       // have to reinitialize this instead of letting it persist to prevent accidental skips of pages by holding down keys too long
       keyboard_listener = jsPsych.pluginAPI.getKeyboardResponse({
         callback_function: after_response,
@@ -250,12 +282,12 @@ const instructions = (function () {
       if (jsPsych.pluginAPI.compareKeys(info.key, trial.key_forward)) {
         next();
       }
-    };
+    }
 
     show_current_page();
 
     if (trial.allow_keys) {
-      var keyboard_listener = jsPsych.pluginAPI.getKeyboardResponse({
+      let keyboard_listener = jsPsych.pluginAPI.getKeyboardResponse({
         callback_function: after_response,
         valid_responses: [trial.key_forward, trial.key_backward],
         rt_method: "date",
