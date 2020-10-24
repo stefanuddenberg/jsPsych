@@ -301,9 +301,7 @@ const instructions = (function () {
 
     const page_content = _.map(trial.pages, extractContent);
     const word_counts = _.map(page_content, countWords);
-    console.log("word_counts", word_counts);
     const reading_speed_delays = _.map(word_counts, getReadingSpeedDelay);
-    console.log("reading_speed_delays", reading_speed_delays);
 
     if (trial.reading_speed_button_delay_type === "show") {
       trial.enable_button_delays = [0];
@@ -329,11 +327,6 @@ const instructions = (function () {
         _.constant(trial.enable_button_delays[0]),
       );
     }
-    console.log(
-      "trial.reading_speed_button_delay_type",
-      trial.reading_speed_button_delay_type,
-    );
-    console.log("enable_button_delays:", trial.enable_button_delays);
 
     show_current_page();
 
