@@ -14,6 +14,7 @@
  *
  */
 
+import "lodash";
 import jsPsych from "jspsych";
 
 const instructions = (function () {
@@ -87,44 +88,37 @@ const instructions = (function () {
       },
       show_button_delays: {
         type: jsPsych.plugins.parameterType.INT,
-        pretty_name: "Show button delay",
+        pretty_name: "Show button delays",
         array: true,
         default: [0],
-        description: "The delay until the next and back buttons are shown.",
+        description:
+          "The delays until the next and back buttons are shown for each page.",
       },
       enable_button_delays: {
         type: jsPsych.plugins.parameterType.INT,
-        pretty_name: "Enable button delay",
+        pretty_name: "Enable button delays",
         array: true,
         default: [0],
-        description: "The delay until the next and back buttons are enabled.",
+        description:
+          "The delays until the next and back buttons are enabled for each page.",
+      },
+      reading_speed_button_delay_type: {
+        type: jsPsych.plugins.parameterType.STRING,
+        pretty_name: "Reading speed button delay type",
+        default: "none",
+        description:
+          "How to delay buttons based on reading speed: show | enable",
+      },
+      reading_speed: {
+        type: jsPsych.plugins.parameterType.INT,
+        pretty_name: "Reading speed",
+        default: 250,
+        description: "Average reading speed in words per minute.",
       },
     },
   };
 
   plugin.trial = function (display_element, trial) {
-    let current_page = 0;
-
-    let view_history = [];
-
-    const start_time = new Date().getTime();
-
-    let last_page_update_time = start_time;
-
-    // make every page have the same delay if only one delay
-    if (trial.show_button_delays.length === 1) {
-      const delay = trial.show_button_delays[0];
-      trial.show_button_delays = _.times(trial.pages.length, _.constant(delay));
-    }
-
-    if (trial.enable_button_delays.length === 1) {
-      const delay = trial.show_button_delays[0];
-      trial.enable_button_delays = _.times(
-        trial.pages.length,
-        _.constant(delay),
-      );
-    }
-
     function btnListener(evt) {
       evt.target.removeEventListener("click", btnListener);
       if (this.id === "jspsych-instructions-back") {
@@ -236,7 +230,7 @@ const instructions = (function () {
     }
 
     function add_current_page_to_view_history() {
-      const current_time = new Date().getTime();
+      const current_time = performance.now();
 
       const page_view_time = current_time - last_page_update_time;
 
@@ -257,7 +251,7 @@ const instructions = (function () {
 
       const trial_data = {
         view_history,
-        rt: new Date().getTime() - start_time,
+        rt: performance.now() - start_time,
       };
 
       jsPsych.finishTrial(trial_data);
@@ -283,6 +277,63 @@ const instructions = (function () {
         next();
       }
     }
+
+    function extractContent(html) {
+      return new DOMParser().parseFromString(html, "text/html").documentElement
+        .textContent;
+    }
+
+    function countWords(str) {
+      return _.words(str).length;
+    }
+
+    function getReadingSpeedDelay(word_count) {
+      return (word_count / trial.reading_speed) * 60000;
+    }
+
+    let current_page = 0;
+
+    let view_history = [];
+
+    const start_time = performance.now();
+
+    let last_page_update_time = start_time;
+
+    const page_content = _.map(trial.pages, extractContent);
+    const word_counts = _.map(page_content, countWords);
+    console.log("word_counts", word_counts);
+    const reading_speed_delays = _.map(word_counts, getReadingSpeedDelay);
+    console.log("reading_speed_delays", reading_speed_delays);
+
+    if (trial.reading_speed_button_delay_type === "show") {
+      trial.enable_button_delays = [0];
+      trial.show_button_delays = reading_speed_delays;
+    }
+
+    if (trial.reading_speed_button_delay_type === "enable") {
+      trial.show_button_delays = [0];
+      trial.enable_button_delays = reading_speed_delays;
+    }
+
+    // make every page have the same delay if only one delay
+    if (trial.show_button_delays.length === 1) {
+      trial.show_button_delays = _.times(
+        trial.pages.length,
+        _.constant(trial.show_button_delays[0]),
+      );
+    }
+
+    if (trial.enable_button_delays.length === 1) {
+      trial.enable_button_delays = _.times(
+        trial.pages.length,
+        _.constant(trial.enable_button_delays[0]),
+      );
+    }
+    console.log(
+      "trial.reading_speed_button_delay_type",
+      trial.reading_speed_button_delay_type,
+    );
+    console.log("enable_button_delays:", trial.enable_button_delays);
 
     show_current_page();
 
