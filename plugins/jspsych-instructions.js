@@ -118,6 +118,7 @@ const instructions = (function () {
     },
   };
 
+  let show_button_timeout, enable_button_timeout;
   plugin.trial = function (display_element, trial) {
     function btnListener(evt) {
       evt.target.removeEventListener("click", btnListener);
@@ -128,7 +129,7 @@ const instructions = (function () {
       }
     }
 
-    function show_current_page() {
+    function showCurrentPage() {
       let html = trial.pages[current_page];
 
       let pagenum_display = "";
@@ -187,8 +188,17 @@ const instructions = (function () {
       if (current_page < trial.pages.length) {
         hideButtons();
         disableButtons();
-        setTimeout(showButtons, trial.show_button_delays[current_page]);
-        setTimeout(enableButtons, trial.enable_button_delays[current_page]);
+        show_button_timeout = setTimeout(
+          showButtons,
+          trial.show_button_delays[current_page],
+        );
+        enable_button_timeout = setTimeout(
+          enableButtons,
+          trial.enable_button_delays[current_page],
+        );
+      }
+      if (current_page > 0) {
+        showAndEnableBackButton();
       }
     }
 
@@ -208,8 +218,17 @@ const instructions = (function () {
       $(".instructions-btn").prop("disabled", false);
     }
 
+    function showAndEnableBackButton() {
+      $("#jspsych-instructions-back").css({ visibility: "visible" });
+      $("#jspsych-instructions-back").prop("disabled", false);
+    }
+
     function next() {
-      add_current_page_to_view_history();
+      addCurrentPageToViewHistory();
+
+      // set delays to zero
+      trial.enable_button_delays[current_page] = 0;
+      trial.show_button_delays[current_page] = 0;
 
       current_page++;
 
@@ -217,19 +236,22 @@ const instructions = (function () {
       if (current_page >= trial.pages.length) {
         endTrial();
       } else {
-        show_current_page();
+        showCurrentPage();
       }
     }
 
     function back() {
-      add_current_page_to_view_history();
+      addCurrentPageToViewHistory();
+
+      clearTimeout(show_button_timeout);
+      clearTimeout(enable_button_timeout);
 
       current_page--;
 
-      show_current_page();
+      showCurrentPage();
     }
 
-    function add_current_page_to_view_history() {
+    function addCurrentPageToViewHistory() {
       const current_time = performance.now();
 
       const page_view_time = current_time - last_page_update_time;
@@ -257,10 +279,10 @@ const instructions = (function () {
       jsPsych.finishTrial(trial_data);
     }
 
-    function after_response(info) {
+    function afterResponse(info) {
       // have to reinitialize this instead of letting it persist to prevent accidental skips of pages by holding down keys too long
       keyboard_listener = jsPsych.pluginAPI.getKeyboardResponse({
-        callback_function: after_response,
+        callback_function: afterResponse,
         valid_responses: [trial.key_forward, trial.key_backward],
         rt_method: "date",
         persist: false,
@@ -328,11 +350,11 @@ const instructions = (function () {
       );
     }
 
-    show_current_page();
+    showCurrentPage();
 
     if (trial.allow_keys) {
       let keyboard_listener = jsPsych.pluginAPI.getKeyboardResponse({
-        callback_function: after_response,
+        callback_function: afterResponse,
         valid_responses: [trial.key_forward, trial.key_backward],
         rt_method: "date",
         persist: false,
