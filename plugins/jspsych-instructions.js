@@ -15,7 +15,7 @@
  */
 
 import "lodash";
-import jsPsych from "jspsych";
+import jsPsych from "../jspsych";
 
 const instructions = (function () {
   let plugin = {};
