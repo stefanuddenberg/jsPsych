@@ -107,7 +107,7 @@ const jsPsych = (function () {
       auto_update_progress_bar: true,
       auto_preload: true,
       show_preload_progress_bar: true,
-      max_load_time: 60000,
+      max_load_time: 600000,
       max_preload_attempts: 10,
       default_iti: 0,
       experiment_width: null,
