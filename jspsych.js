@@ -1773,11 +1773,31 @@ jsPsych.data = (function () {
 })();
 
 jsPsych.turk = (function () {
-  var module = {};
+  let module = {};
 
   // core.turkInfo gets information relevant to mechanical turk experiments. returns an object
   // containing the workerID, assignmentID, and hitID, and whether or not the HIT is in
   // preview mode, meaning that they haven't accepted the HIT yet.
+
+  module.prolificInfo = function () {
+    const params = new URLSearchParams(window.location.search);
+    const prolific_info = {
+      PROLIFIC_PID: undefined,
+      STUDY_ID: undefined,
+      SESSION_ID: undefined,
+    };
+    Object.keys(prolific_info).map((key) => {
+      prolific_info[key] = params.get(key);
+    });
+    return prolific_info;
+  };
+
+  module.submitToProlific = function (url) {
+    // XXX
+    // TODO: Implement
+    window.location.href = url;
+  };
+
   module.turkInfo = function () {
     var turk = {};
 
