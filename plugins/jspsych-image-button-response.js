@@ -9,13 +9,13 @@
  **/
 import jsPsych from "../jspsych";
 
-const image_button_response = (function() {
+const image_button_response = (function () {
   var plugin = {};
 
   jsPsych.pluginAPI.registerPreload(
     "image-button-response",
     "stimulus",
-    "image",
+    "image"
   );
 
   plugin.info = {
@@ -99,7 +99,7 @@ const image_button_response = (function() {
     },
   };
 
-  plugin.trial = function(display_element, trial) {
+  plugin.trial = function (display_element, trial) {
     // display stimulus
     var html =
       '<img src="' +
@@ -126,7 +126,7 @@ const image_button_response = (function() {
         buttons = trial.button_html;
       } else {
         console.error(
-          "Error in image-button-response plugin. The length of the button_html array does not equal the length of the choices array",
+          "Error in image-button-response plugin. The length of the button_html array does not equal the length of the choices array"
         );
       }
     } else {
@@ -166,7 +166,7 @@ const image_button_response = (function() {
     for (var i = 0; i < trial.choices.length; i++) {
       display_element
         .querySelector("#jspsych-image-button-response-button-" + i)
-        .addEventListener("click", function(e) {
+        .addEventListener("click", function (e) {
           var choice = e.currentTarget.getAttribute("data-choice"); // don't use dataset for jsdom compatibility
           after_response(choice);
         });
@@ -189,12 +189,12 @@ const image_button_response = (function() {
       // after a valid response, the stimulus will have the CSS class 'responded'
       // which can be used to provide visual feedback that a response was recorded
       display_element.querySelector(
-        "#jspsych-image-button-response-stimulus",
+        "#jspsych-image-button-response-stimulus"
       ).className += " responded";
 
       // disable all the buttons after a response
       var btns = document.querySelectorAll(
-        ".jspsych-image-button-response-button button",
+        ".jspsych-image-button-response-button button"
       );
       for (var i = 0; i < btns.length; i++) {
         //btns[i].removeEventListener('click');
@@ -227,16 +227,16 @@ const image_button_response = (function() {
 
     // hide image if timing is set
     if (trial.stimulus_duration !== null) {
-      jsPsych.pluginAPI.setTimeout(function() {
+      jsPsych.pluginAPI.setTimeout(function () {
         display_element.querySelector(
-          "#jspsych-image-button-response-stimulus",
+          "#jspsych-image-button-response-stimulus"
         ).style.visibility = "hidden";
       }, trial.stimulus_duration);
     }
 
     // end trial if time limit is set
     if (trial.trial_duration !== null) {
-      jsPsych.pluginAPI.setTimeout(function() {
+      jsPsych.pluginAPI.setTimeout(function () {
         end_trial();
       }, trial.trial_duration);
     }
