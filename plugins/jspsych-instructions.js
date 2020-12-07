@@ -313,6 +313,8 @@ const instructions = (function () {
       return (word_count / trial.reading_speed) * 60000;
     }
 
+    let keyboard_listener;
+
     let current_page = 0;
 
     let view_history = [];
@@ -353,7 +355,7 @@ const instructions = (function () {
     showCurrentPage();
 
     if (trial.allow_keys) {
-      let keyboard_listener = jsPsych.pluginAPI.getKeyboardResponse({
+      keyboard_listener = jsPsych.pluginAPI.getKeyboardResponse({
         callback_function: afterResponse,
         valid_responses: [trial.key_forward, trial.key_backward],
         rt_method: "date",
