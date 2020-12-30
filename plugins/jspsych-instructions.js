@@ -112,7 +112,7 @@ const instructions = (function () {
       reading_speed: {
         type: jsPsych.plugins.parameterType.INT,
         pretty_name: "Reading speed",
-        default: 250,
+        default: 300,
         description: "Average reading speed in words per minute.",
       },
     },
