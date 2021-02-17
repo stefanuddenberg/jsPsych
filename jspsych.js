@@ -2212,8 +2212,10 @@ jsPsych.pluginAPI = (function () {
   module.unloadCSS = function (id) {
     /** Unloads the stylesheet referenced by id. */
     const style_sheet = document.getElementById(id);
-    style_sheet.disabled = true;
-    style_sheet.parentNode.removeChild(style_sheet);
+    if (style_sheet) {
+      style_sheet.disabled = true;
+      style_sheet.parentNode.removeChild(style_sheet);
+    }
   };
 
   module.reset = function (root_element) {
